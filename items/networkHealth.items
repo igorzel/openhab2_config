@@ -1,0 +1,3 @@
+Switch netStateProxy_Door { mqtt="<[mosquitto:/door/net:state:default]" }
+
+Switch netStateProxy_lightController1

@@ -1,0 +1,7 @@
+// Вхідні двері
+
+Contact Door { mqtt="<[mosquitto:/door/state:state:default]" }
+DateTime DoorLastOpen
+DateTime DoorLastClosed
+
+Switch DoorBell "Дзвінок вхідних дверей"

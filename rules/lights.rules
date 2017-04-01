@@ -1,0 +1,54 @@
+import java.util.concurrent.locks.ReentrantLock
+import org.eclipse.smarthome.model.script.actions.Timer
+
+var Timer lightController1OfflineTimer = null
+var ReentrantLock lock1 = new ReentrantLock()
+
+rule "Controller offline"
+when
+    Item LivingRoom_Wall_Light changed to UNDEF
+then
+    lock1.lock()
+    try 
+    {
+        netStateProxy_lightController1.postUpdate(OFF)
+
+    	if (lightController1OfflineTimer == null)
+        {
+            lightController1OfflineTimer = createTimer(now.plusMinutes(1)) [|
+		        var String message = "Контроллер світла 1 не відповідає вже хвилину"
+		        
+//				pushover(message, 1)
+				sendBroadcastNotification(message)
+				logInfo("lights.rules", message)
+            ]
+        }
+    }
+    finally
+    {
+        lock1.unlock()
+    }
+end
+
+rule "Controller offline"
+when
+    Item LivingRoom_Wall_Light changed from UNDEF 
+then
+    lock1.lock()
+    try 
+    {
+        netStateProxy_lightController1.postUpdate(ON)
+
+        if (lightController1OfflineTimer != null)
+        {
+            lightController1OfflineTimer.cancel()
+            lightController1OfflineTimer = null
+        }
+    }
+    finally
+    {
+        lock1.unlock()
+    }
+end
+
+

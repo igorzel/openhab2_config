@@ -1,0 +1,33 @@
+sitemap hatka label="Хатка" {
+	Text label="Світло" icon="firstfloor" {
+		Frame {
+			Switch item=gLights mappings=[OFF="Вимкнути все"]
+		}
+		
+		Frame label="Вітальня" {
+	        Switch item=LivingRoom_Light		icon="light"	label="Світло у вітальні"
+	        Switch item=LivingRoom_Wall_Light	icon="light"	label="Світло на стіні у вітальні"
+		}
+		
+		Frame label="Ванна" {
+	        Switch item=Bathroom_Light			icon="light"	label="Світло у ванній"
+	        Switch item=Bathroom_ExtractorFan	icon="fan"		label="Витяжка у ванній"
+	        Switch item=Bathroom_Mirror_Light	icon="light"	label="Світло біля дзеркала у ванній"
+	    }
+	
+		Frame label="Гардероб і коридор" {
+			Switch item=Wardrobe_Light			icon="light"	label="Світло у гардеробі"
+			Switch item=Corridor_Door_Light		icon="light"	label="Світло біля вхідних дверей"
+			Switch item=Corridor_Light			icon="light"	label="Світло у коридорі"
+		}
+	}
+	
+	Text label="Безпека" icon="lock" {
+		Frame label="Вхідні двері" {
+			Text item=Door label="Замок [%s]" valuecolor=[OPEN="red"] icon="lock"
+			Text item=netStateProxy_Door label="Вхідні двері [MAP(netState.map):%s]" valuecolor=[ON="green", OFF="grey"] visibility=[netStateProxy_Door=="OFF"] icon="door-closed"
+			Text item=DoorLastOpen label="Відчинено востаннє [%1$tm/%1$td %1$tH:%1$tM]" icon="frontdoor-open"
+			Text item=DoorLastClosed label="Зачинено востаннє [%1$tm/%1$td %1$tH:%1$tM]" icon="frontdoor-closed"
+		}	
+	}	
+}

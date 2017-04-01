@@ -1,0 +1,30 @@
+/* Active groups */
+Group:Switch:OR(ON, OFF)        gLights      "Все світло [(%d)]"
+
+/* Lights */
+Switch Corridor_Door_Light		"Світло біля вхідних дверей"	(gLights)	{modbus="ioboard1:7"}
+Switch Corridor_Light			"Світло у коридорі"				(gLights)	{modbus="ioboard1:6"}
+
+Switch Wardrobe_Light 			"Світло у гардеробі"			(gLights)	{modbus="ioboard1:5"}
+
+Switch Bathroom_Light			"Світло у ванній"				(gLights)	{modbus="ioboard1:4"}
+Switch Bathroom_ExtractorFan	"Витяжка у ванній"				(gLights)	{modbus="ioboard1:3"}
+Switch Bathroom_Mirror_Light	"Світло біля дзеркала у ванній"	(gLights)	{modbus="ioboard1:2"}
+
+Switch LivingRoom_Light			"Світло у вітальні"				(gLights)	{modbus="ioboard1:1"}
+Switch LivingRoom_Wall_Light	"Світло на стіні у вітальні"	(gLights)	{modbus="ioboard1:0"}
+Switch LivingRoom_Led_Light		"Підсвітка стелі у вітальні"	(gLights)
+
+Switch Balcony_Light			"Світло на балконі"				(gLights)
+
+Switch Kitchen_Light			"Світло на кухні"				(gLights)
+Switch Kitchen_Ceiling_Light	"Світло на стелі у кухні"		(gLights)
+
+Switch Bedroom_Nigh_Light		"Нічник у спальні"				(gLights)
+Switch Bedroom_Led_Light		"Підсвітка стелі у спальні"		(gLights)
+Switch Bedroom_Bed_Light		"Світло біля ліжка у спальні"	(gLights)
+Switch Bedroom_1_Light			"Світло у спальні (1 лампа)"	(gLights)
+Switch Bedroom_2_Light			"Світло у спальні (2 лампи)"	(gLights)
+
+Switch Panorama_Left_Light		"Світло ліворуч на панорамі"	(gLights)
+Switch Panorama_Right_Light		"Світло праворуч на панорамі"	(gLights)
