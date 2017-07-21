@@ -1,0 +1,5 @@
+sitemap testing label="Тестування" {
+	Frame label="Світло" {
+		Switch item=NewYearFun_Switch mappings=[ON="Запуск!"]
+	}
+}

@@ -1,0 +1,55 @@
+import org.eclipse.smarthome.model.script.actions.Timer
+
+var Timer newYearFunTimer = null
+var Integer currentNewYearFunIndex = 0  
+
+rule "New year fun"
+when
+    Item NewYearFun_Switch received command ON
+then
+	logInfo("testing.rules", "New year fun begins!")
+
+	if (newYearFunTimer != null)
+	{
+		newYearFunTimer.cancel()
+		newYearFunTimer = null
+	}
+	
+	gLights.sendCommand(OFF)
+
+	currentNewYearFunIndex = 0
+	
+    newYearFunTimer = createTimer(now.plusSeconds(1)) [|
+		if (currentNewYearFunIndex == 0) {
+			Corridor_Door_Light.sendCommand(ON)
+		} else if (currentNewYearFunIndex == 1) {
+			Corridor_Door_Light.sendCommand(OFF)
+			Bathroom_Mirror_Light.sendCommand(ON)
+		} else if (currentNewYearFunIndex == 2) {
+			Bathroom_Mirror_Light.sendCommand(OFF)
+			Bathroom_Light.sendCommand(ON)
+		} else if (currentNewYearFunIndex == 3) {
+			Bathroom_Light.sendCommand(OFF)
+			Wardrobe_Light.sendCommand(ON)
+		} else if (currentNewYearFunIndex == 4) {
+			Wardrobe_Light.sendCommand(OFF)
+			Corridor_Light.sendCommand(ON)
+		} else if (currentNewYearFunIndex == 5) {
+			Corridor_Light.sendCommand(OFF)
+			LivingRoom_Light.sendCommand(ON)
+		} else if (currentNewYearFunIndex == 6) {
+			LivingRoom_Light.sendCommand(OFF)
+			LivingRoom_Wall_Light.sendCommand(ON)
+		}
+    	
+		var String message = String::format("GO! %d", currentNewYearFunIndex)
+		logInfo("testing.rules", message)
+
+		currentNewYearFunIndex = currentNewYearFunIndex + 1
+		
+		if (currentNewYearFunIndex < 7)
+		{
+			newYearFunTimer.reschedule(now.plusSeconds(1))
+		}
+    ]
+end

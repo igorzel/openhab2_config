@@ -1,0 +1,123 @@
+
+rule "VoiceControl" 
+when 
+    Item VoiceCommand received command
+then 
+    var String command = receivedCommand.toString.toLowerCase
+    logInfo("Voice.Rec","VoiceCommand received \"" + command + "\"")
+
+	if (command.contains("світло") || command.contains("витяжк")) {
+		var String newState = null
+	    if (command.contains("вимкн")) {
+	        newState = "OFF"
+		    logInfo("Voice.Rec","Recognized: OFF")
+	    } else if (command.contains("увімкн")) {
+	        newState = "ON"
+		    logInfo("Voice.Rec","Recognized: ON")
+	    }
+	    
+	    if (command.contains("вітальн") && command.contains("стін")) {
+	    	if (newState == null)
+		        if (LivingRoom_Wall_Light.state == ON) LivingRoom_Wall_Light.sendCommand(OFF) else LivingRoom_Wall_Light.sendCommand(ON)
+			else
+				LivingRoom_Wall_Light.sendCommand(newState)
+	    } else if (command.contains("вітальн")) {
+	    	if (newState == null)
+		        if (LivingRoom_Light.state == ON) LivingRoom_Light.sendCommand(OFF) else LivingRoom_Light.sendCommand(ON)
+			else
+				LivingRoom_Light.sendCommand(newState)
+	    } else if (command.contains("коридор")) {
+	    	if (newState == null)
+		        if (Corridor_Light.state == ON) Corridor_Light.sendCommand(OFF) else Corridor_Light.sendCommand(ON)
+			else
+				Corridor_Light.sendCommand(newState)
+	    } else if (command.contains("коридор") && command.contains("двер")) {
+	    	if (newState == null)
+		        if (Corridor_Door_Light.state == ON) Corridor_Door_Light.sendCommand(OFF) else Corridor_Door_Light.sendCommand(ON)
+			else
+				Corridor_Door_Light.sendCommand(newState)
+	    } else if (command.contains("ванн")) {
+	    	if (newState == null)
+		        if (Bathroom_Light.state == ON) Bathroom_Light.sendCommand(OFF) else Bathroom_Light.sendCommand(ON)
+			else
+				Bathroom_Light.sendCommand(newState)
+	    } else if (command.contains("ванн") && command.contains("дзеркал")) {
+	    	if (newState == null)
+		        if (Bathroom_Mirror_Light.state == ON) Bathroom_Mirror_Light.sendCommand(OFF) else Bathroom_Mirror_Light.sendCommand(ON)
+			else
+				Bathroom_Mirror_Light.sendCommand(newState)
+	    } else if (command.contains("комор") || command.contains("гардероб")) {
+	    	if (newState == null)
+		        if (Wardrobe_Light.state == ON) Wardrobe_Light.sendCommand(OFF) else Wardrobe_Light.sendCommand(ON)
+			else
+				Wardrobe_Light.sendCommand(newState)
+	    } else if (command.contains("витяжк")) {
+	    	if (newState == null)
+		        if (Bathroom_ExtractorFan.state == ON) Bathroom_ExtractorFan.sendCommand(OFF) else Bathroom_ExtractorFan.sendCommand(ON)
+			else
+				Bathroom_ExtractorFan.sendCommand(newState)
+	    } else if (command.contains("скрізь") || command.contains(" все")) {
+	        gLights?.members.forEach(item | sendCommand(item, newState))
+	    }
+	}    
+end
+
+rule "VoiceCommandTurnOn" 
+when 
+    Item VoiceCommandTurnOn received command
+then 
+    var String command = receivedCommand.toString.toLowerCase
+    logInfo("Voice.Rec.EN","VoiceCommandTurnOn received \"" + command + "\"")
+
+	var String newState = "ON"
+    
+    if (command.contains("living") && command.contains("wall")) {
+		LivingRoom_Wall_Light.sendCommand(newState)
+    } else if (command.contains("living")) {
+		LivingRoom_Light.sendCommand(newState)
+    } else if (command.contains("corridor") && command.contains("door")) {
+		Corridor_Door_Light.sendCommand(newState)
+    } else if (command.contains("corridor")) {
+		Corridor_Light.sendCommand(newState)
+    } else if (command.contains("bathroom") && command.contains("mirror")) {
+		Bathroom_Mirror_Light.sendCommand(newState)
+    } else if (command.contains("bathroom")) {
+		Bathroom_Light.sendCommand(newState)
+    } else if (command.contains("wardrobe")) {
+		Wardrobe_Light.sendCommand(newState)
+    } else if (command.contains("fan")) {
+		Bathroom_ExtractorFan.sendCommand(newState)
+    } else if (command.contains("every") || command.contains("all")) {
+        gLights?.members.forEach(item | sendCommand(item, newState))
+    }
+end
+
+rule "VoiceCommandTurnOff" 
+when 
+    Item VoiceCommandTurnOff received command
+then 
+    var String command = receivedCommand.toString.toLowerCase
+    logInfo("Voice.Rec.EN","VoiceCommandTurnOff received \"" + command + "\"")
+
+	var String newState = "OFF"
+    
+    if (command.contains("living") && command.contains("wall")) {
+		LivingRoom_Wall_Light.sendCommand(newState)
+    } else if (command.contains("living")) {
+		LivingRoom_Light.sendCommand(newState)
+    } else if (command.contains("corridor") && command.contains("door")) {
+		Corridor_Door_Light.sendCommand(newState)
+    } else if (command.contains("corridor")) {
+		Corridor_Light.sendCommand(newState)
+    } else if (command.contains("bathroom") && command.contains("mirror")) {
+		Bathroom_Mirror_Light.sendCommand(newState)
+    } else if (command.contains("bathroom")) {
+		Bathroom_Light.sendCommand(newState)
+    } else if (command.contains("wardrobe")) {
+		Wardrobe_Light.sendCommand(newState)
+    } else if (command.contains("fan")) {
+		Bathroom_ExtractorFan.sendCommand(newState)
+    } else if (command.contains("every") || command.contains("all")) {
+        gLights?.members.forEach(item | sendCommand(item, newState))
+    }
+end

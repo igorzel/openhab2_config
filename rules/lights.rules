@@ -4,6 +4,11 @@ import org.eclipse.smarthome.model.script.actions.Timer
 var Timer lightController1OfflineTimer = null
 var ReentrantLock lock1 = new ReentrantLock()
 
+var Timer bathroomFanTimer = null
+var ReentrantLock bathroomFanLock = new ReentrantLock()
+
+/*****************************************************************************/
+
 rule "Controller offline"
 when
     Item LivingRoom_Wall_Light changed to UNDEF
@@ -51,4 +56,42 @@ then
     }
 end
 
+/*****************************************************************************/
 
+rule "Bathroom fan"
+when
+	Item Bathroom_Light changed or
+	Item Bathroom_Mirror_Light changed or
+    Item Bathroom_ExtractorFan changed
+then
+    bathroomFanLock.lock()
+    try 
+    {
+    	if (bathroomFanTimer != null)
+    	{
+    		bathroomFanTimer.cancel();
+    		bathroomFanTimer = null;
+    	}
+    	
+	    if (Bathroom_Light.state == OFF && Bathroom_Mirror_Light.state == OFF && Bathroom_ExtractorFan.state == ON)
+	    {
+	        //logInfo("TestRule", "Світло у ванні вимкнено але витяжка працює. Витяжку можна вимкнути за 30 секунд.")
+
+	    	if (bathroomFanTimer == null)
+	        {
+	            bathroomFanTimer = createTimer(now.plusSeconds(30)) [|
+					var String message = "Витяжку у ванні вимкнено автоматично"
+        			pushover(message)
+        			logInfo("TestRule", message)
+	            	
+					Bathroom_ExtractorFan.sendCommand(OFF)
+	            ]
+	        }
+	    } 
+    }
+    finally
+    {
+        bathroomFanLock.unlock()
+    }
+        
+end
