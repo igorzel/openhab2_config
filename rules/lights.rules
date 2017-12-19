@@ -58,39 +58,70 @@ end
 
 /*****************************************************************************/
 
-rule "Bathroom fan"
+rule "Bathroom fan 1"
 when
 	Item Bathroom_Light changed or
 	Item Bathroom_Mirror_Light changed or
-    Item Bathroom_ExtractorFan changed
+    Item Bathroom_ExtractorFan changed to OFF
 then
     bathroomFanLock.lock()
-    try 
-    {
-    	if (bathroomFanTimer != null)
-    	{
+    try {
+//		logInfo("TestRule", "Bathroom fan rule 1")
+		
+    	if (bathroomFanTimer != null) {
+//	        logInfo("TestRule", "Відміна таймера")
     		bathroomFanTimer.cancel();
     		bathroomFanTimer = null;
     	}
     	
-	    if (Bathroom_Light.state == OFF && Bathroom_Mirror_Light.state == OFF && Bathroom_ExtractorFan.state == ON)
-	    {
-	        //logInfo("TestRule", "Світло у ванні вимкнено але витяжка працює. Витяжку можна вимкнути за 30 секунд.")
-
-	    	if (bathroomFanTimer == null)
-	        {
+    	if ((Bathroom_Light.state == OFF) &&
+			(Bathroom_Mirror_Light.state == OFF) && 
+			(Bathroom_ExtractorFan.state == ON)) {
+		        logInfo("TestRule", "Світло у ванні вимкнено але витяжка працює. Витяжку можна вимкнути за 30 секунд.")
+	
 	            bathroomFanTimer = createTimer(now.plusSeconds(30)) [|
 					var String message = "Витяжку у ванні вимкнено автоматично"
-        			pushover(message)
-        			logInfo("TestRule", message)
+					pushover(message)
+					logInfo("TestRule", message)
 	            	
 					Bathroom_ExtractorFan.sendCommand(OFF)
 	            ]
-	        }
-	    } 
+    	}
+    } finally {
+        bathroomFanLock.unlock()
     }
-    finally
-    {
+        
+end
+
+
+rule "Bathroom fan 2"
+when
+    Item Bathroom_ExtractorFan changed to ON
+then
+    bathroomFanLock.lock()
+    try {
+//		logInfo("TestRule", "Bathroom fan rule 2")
+		
+    	if (bathroomFanTimer != null) {
+//	        logInfo("TestRule", "Відміна таймера")
+    		bathroomFanTimer.cancel();
+    		bathroomFanTimer = null;
+    	}
+    	
+    	if ((Bathroom_Light.state == OFF) && 
+    		(Bathroom_Mirror_Light.state == OFF) && 
+    		(Bathroom_ExtractorFan.state == ON)) {
+		        logInfo("TestRule", "Світло у ванні вимкнено але увімкнули витяжку. Це режим провітрювання.")
+	
+	            bathroomFanTimer = createTimer(now.plusMinutes(5)) [|
+					var String message = "Провітрювання закінчено. Витяжку у ванні вимкнено."
+					pushover(message)
+					logInfo("TestRule", message)
+					
+					Bathroom_ExtractorFan.sendCommand(OFF)
+	            ]
+	    } 
+    } finally {
         bathroomFanLock.unlock()
     }
         
